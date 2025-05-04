@@ -1,4 +1,3 @@
-
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -26,13 +25,12 @@ if (!fs.existsSync(dbPath)) {
   console.log('Created new db.json file');
 }
 
-// Enhanced CORS configuration for Vercel deployment
 // Enhanced CORS configuration to allow frontend on Vercel
 app.use(cors({
-  origin: '*', // This allows all origins
-   origin: [
+  origin: [
     'https://jogo-do-bicho-frontend.vercel.app', // URL do frontend no Vercel
     'http://localhost:8080', // URL local para desenvolvimento
+    '*' // Permitir qualquer origem em desenvolvimento
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -65,13 +63,10 @@ app.use('*', (req, res) => {
   res.status(404).json({ message: 'Rota não encontrada' });
 });
 
-// Start server if not running in production (Vercel)
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
-}
+// Start server
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
+});
 
-// Export for Vercel serverless
 module.exports = app;
