@@ -1,4 +1,3 @@
-
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -24,11 +23,12 @@ if (!fs.existsSync(path.dirname(dbPath))) {
 }
 if (!fs.existsSync(dbPath)) {
   fs.writeFileSync(dbPath, JSON.stringify({ users: [], apostas: [], resultados: [], transacoes: [] }));
+  console.log('Created new database file');
 }
 
-// Enhanced CORS configuration for Vercel deployment
+// Enhanced CORS configuration for Render deployment
 app.use(cors({
-  origin: '*', // This allows all origins
+  origin: '*', // Allow all origins
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
   res.json({ message: 'Bem-vindo à API do Jogo do Bicho!', status: 'online' });
 });
 
-// Health check endpoint for Vercel
+// Health check endpoint for Render
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'healthy' });
 });
@@ -60,12 +60,16 @@ app.use('*', (req, res) => {
   res.status(404).json({ message: 'Rota não encontrada' });
 });
 
-// Start server
-if (process.env.NODE_ENV !== 'production') {
+// Start server - optimized for Render
+if (process.env.NODE_ENV === 'production') {
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT} in production mode`);
+  });
+} else {
   app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT} in development mode`);
   });
 }
 
-// Export for Vercel
+// Export for testing
 module.exports = app;
