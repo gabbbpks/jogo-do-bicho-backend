@@ -27,8 +27,13 @@ if (!fs.existsSync(dbPath)) {
 }
 
 // Enhanced CORS configuration for Vercel deployment
+// Enhanced CORS configuration to allow frontend on Vercel
 app.use(cors({
   origin: '*', // This allows all origins
+   origin: [
+    'https://jogo-do-bicho-frontend.vercel.app', // URL do frontend no Vercel
+    'http://localhost:8080', // URL local para desenvolvimento
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
